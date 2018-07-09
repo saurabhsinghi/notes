@@ -1,0 +1,27 @@
+ public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int [] merged = new int[m+n];
+        int lPtr, rPtr,i = 0;
+        
+        while(lPtr<m && rPtr<n){
+            if(nums1[lPtr]<nums2[rPtr]){
+                merged[i] = nums1[lPtr];
+                lPtr++;
+            }
+            else{
+                rPtr++;
+                merged[i] = nums2[rPtr];
+            }
+            i++; 
+        }
+        while(lPtr<m){
+            merged[i] = nums1[lPtr];
+            lPtr++;
+            i++;
+        }
+        while(rPtr<n){
+            merged[i] = nums2[rPtr];
+            rPtr++;
+            i++;
+        }
+        return merged;
+    }

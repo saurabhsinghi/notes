@@ -1,0 +1,20 @@
+/*Quick Sort*/
+public List<Integer> quickSort(List<Integer> input){
+if(input.size()<2) return input;
+        int pivot = input.get(0);
+        List<Integer> left = new List<>();
+        List<Integer> right = new List<>();
+        for(Integer: input){
+            if(input<pivot){
+               left.add(input); 
+            }
+            else{
+                right.add(input);
+            }
+        }
+        
+        List<Integer> sorted = quickSort(left);
+        sorted.add(pivot);
+        sorted.addAll(quickSort(right));
+        return sorted;
+}

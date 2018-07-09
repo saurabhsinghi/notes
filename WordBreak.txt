@@ -1,0 +1,23 @@
+class Solution { 
+    Set<Integer> notPossible = new HashSet<>();
+    
+    public boolean wordBreak(String s, List<String> wordDict) {
+        if (s.isEmpty()) {
+            return true;
+        }
+        if (notPossible.contains(s.length())) {
+            return false;
+        }
+        for (String word : wordDict) {
+            if (s.startsWith(word)) {
+                String rest = s.substring(word.length());
+                boolean result = wordBreak(rest, wordDict);
+                if (result) {
+                    return true;
+                }
+                notPossible.add(rest.length());
+            }
+        }
+        return false;
+    }
+}

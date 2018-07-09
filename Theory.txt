@@ -1,0 +1,7 @@
+Java: https://www.pearsonfrank.com/blog/85-core-java-interviews-questions/#Multithreading,Concurrency,andThreadBasicsQuestions
+
+Spring: https://www.javacodegeeks.com/2014/05/spring-interview-questions-and-answers.html
+
+Hibernate: http://www.javatechinfo.com/2013/01/top-50-important-hibernate-interview.html
+
+
