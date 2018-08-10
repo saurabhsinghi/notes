@@ -1,4 +1,17 @@
 public ListNode reverseList(ListNode head) {
+    /* iterative solution */
+    ListNode newHead = null;
+    while (head != null) {
+        ListNode next = head.next;
+        head.next = newHead;
+        newHead = head;
+        head = next;
+    }
+    return newHead;
+}
+
+public ListNode reverseList(ListNode head) {
+       /*recursive solution*/
        if(head == null) return null;
        if(head.next == null) return head;
         ListNode next = head.next;
@@ -7,3 +20,5 @@ public ListNode reverseList(ListNode head) {
         next.next = head;
         return othersReversed;
     }
+    
+    
