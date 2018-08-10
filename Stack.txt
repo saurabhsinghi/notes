@@ -1,0 +1,43 @@
+/*Stack implementation in Java using LinkedList
+ Operations supported - push and pop
+*/
+
+public class StackNode{
+    int value;
+    StackNode next;
+    StackNode(int v){
+        this.value = v;
+    }    
+}
+
+public class Stack{
+    StackNode top;
+    
+    public Stack(StackNode top){    
+        this.top = top;
+        top.next = null;
+    }
+    
+    
+    //Inserts to the top of the stack.
+    public void push(int val){
+        StackNode s = new StackNode(val);
+        if(top==null){
+            Stack(s);
+        }
+        else{
+          s.next = top.next;
+          top = s; 
+        }
+    }
+    
+    //Removes from the top of the stack.
+    public int pop(){
+        if(top==null){
+            return null;
+        }
+        else{
+            return top.value.
+        }
+    }
+}
