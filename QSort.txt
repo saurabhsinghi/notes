@@ -2,17 +2,16 @@
 public List<Integer> quickSort(List<Integer> input){
 if(input.size()<2) return input;
         int pivot = input.get(0);
-        List<Integer> left = new List<>();
-        List<Integer> right = new List<>();
-        for(Integer: input){
-            if(input<pivot){
-               left.add(input); 
+        List<Integer> left = new ArrayList<>();
+        List<Integer> right = new ArrayList<>();
+        for(Integer i : input){
+            if(i<pivot){
+               left.add(i); 
             }
             else{
-                right.add(input);
+                right.add(i);
             }
         }
-        
         List<Integer> sorted = quickSort(left);
         sorted.add(pivot);
         sorted.addAll(quickSort(right));
