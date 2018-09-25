@@ -1,27 +1,31 @@
- public void merge(int[] nums1, int m, int[] nums2, int n) {
-        int [] merged = new int[m+n];
-        int lPtr, rPtr,i = 0;
+ public static List<Integer> mergeSort(final List<Integer> values){
+   if(values.size()<2) return values;
+   final List<Integer> left = values.subList(0, values.size()/2);
+   final List<Integer> right = values.subLisr(values.size()/2, values.size());
+   return merge(mergeSort(left), mergeSort(right));
+ }
+ 
+ public void merge(List<Integer> left, List<Integer> right) {
+        List<Integer> merged = new ArrayList<Integer>(left.size()+right.size());
+        int lPtr, rPtr, i = 0;
         
-        while(lPtr<m && rPtr<n){
-            if(nums1[lPtr]<nums2[rPtr]){
-                merged[i] = nums1[lPtr];
+        while(lPtr<left.size() && rPtr<right.size()){
+            if(left.get(lPtr)<right.get(rPtr)){
+                merged.add(left.get(lPtr));
                 lPtr++;
             }
             else{
                 rPtr++;
-                merged[i] = nums2[rPtr];
+                merged.add(right.get(rPtr));
             }
-            i++; 
         }
-        while(lPtr<m){
-            merged[i] = nums1[lPtr];
+        while(lPtr<left.size()){
+            merged.add(left.get(lPtr));
             lPtr++;
-            i++;
         }
-        while(rPtr<n){
-            merged[i] = nums2[rPtr];
+        while(rPtr<right.size()){
+             merged.add(right.get(rPtr));
             rPtr++;
-            i++;
         }
         return merged;
     }
