@@ -1,14 +1,13 @@
  public static List<Integer> mergeSort(final List<Integer> values){
    if(values.size()<2) return values;
    final List<Integer> left = values.subList(0, values.size()/2);
-   final List<Integer> right = values.subLisr(values.size()/2, values.size());
+   final List<Integer> right = values.subList(values.size()/2, values.size());
    return merge(mergeSort(left), mergeSort(right));
  }
  
  public void merge(List<Integer> left, List<Integer> right) {
         List<Integer> merged = new ArrayList<Integer>(left.size()+right.size());
-        int lPtr, rPtr, i = 0;
-        
+        int lPtr, rPtr;
         while(lPtr<left.size() && rPtr<right.size()){
             if(left.get(lPtr)<right.get(rPtr)){
                 merged.add(left.get(lPtr));
