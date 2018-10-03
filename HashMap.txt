@@ -1,46 +1,47 @@
-public class Entry<K,V> {
-  K key;
-  V value;
-  int hash;
-  Entry<K,V> next;
-  public Entry(K k, V v, int hash, Entry next){
-   
-  }
-}
+public class HashMap<K,V>{
+        public class Entry<K,V> {
+          K key;
+          V value;
+          int hash;
+          Entry<K,V> next;
+          public Entry(K k, V v, int hash, Entry next){
 
-int table [] Entry<K,V>;
+          }
+        }
+        int table [] Entry<K,V>;
 
-public V get(K k){
-  if(k==null) {getForNullKey();}
-  int hash = hash(k);
-  Entry<K,V> entry = table[hash];
-    while(entry!=null){
-      if(entry.key.equals(k)){
-        return entry.value;
-      }
-      entry = entry.next;
-    }
-    return null;
-}
+        public V get(K k){
+          if(k==null) {getForNullKey();}
+          int hash = hash(k);
+          Entry<K,V> entry = table[hash];
+            while(entry!=null){
+              if(entry.key.equals(k)){
+                return entry.value;
+              }
+              entry = entry.next;
+            }
+            return null;
+        }
 
-public K put(K k, V v){
-  if(k==null) {putForNullValue()}
-  int hash = hash(k);
-  Entry<K,V> entry = table[hash];
- //New Key
- if(entry==null){
-    entry = new Entry(k,v,hash,null);
-    table[hash] = entry;
-  }
- //Existing Key
-  else{
-   while(entry!=null){
-     if(entry.key.equals(k)){
-        entry.value = v;
-        break;
-     }
-     entry = entry.next;
-   }
-  }
- return k;
-}
+        public K put(K k, V v){
+          if(k==null) {putForNullValue()}
+          int hash = hash(k);
+          Entry<K,V> entry = table[hash];
+         //New Key
+         if(entry==null){
+            entry = new Entry(k,v,hash,null);
+            table[hash] = entry;
+          }
+         //Existing Key
+          else{
+           while(entry!=null){
+             if(entry.key.equals(k)){
+                entry.value = v;
+                break;
+             }
+             entry = entry.next;
+           }
+          }
+         return k;
+        }
+   }     
