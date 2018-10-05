@@ -1,0 +1,417 @@
+Board.java
+
+package com.tn.board;
+
+import com.tn.field.IGameField;
+import com.tn.field.WaterField;
+import com.tn.ship.Ship;
+import com.tn.field.ShipField;
+import com.tn.ship.ShipSize;
+
+import java.awt.*;
+import java.util.Scanner;
+
+
+public class Board {
+    private static final char WATER = '~';
+    private static final int BOARD_SIZE = 10;
+    private static final char[] BOARD_LETTERS = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+    private static final String HORIZONTAL = "H";
+    private static final String VERTICAL = "V";
+
+    private Scanner scanner;
+    private IGameField[][] board;
+    private static final Ship[] ships;
+
+    static {
+        ships = new Ship[] {
+                new Ship("Carrier", ShipSize.CARRIER),
+                new Ship("Battleship", ShipSize.BATTLESHIP),
+                new Ship("Cruiser", ShipSize.CRUISER),
+                new Ship("Submarine", ShipSize.SUBMARINE),
+                new Ship("Destroyer", ShipSize.DESTROYER)
+        };
+    }
+
+    public Board() {
+        this.scanner = new Scanner(System.in);
+        this.board = new IGameField[BOARD_SIZE][BOARD_SIZE];
+        for(int i = 0; i < BOARD_SIZE; i++) {
+            for(int j = 0; j < BOARD_SIZE; j++) {
+                board[i][j] = new WaterField();
+            }
+        }
+
+    }
+
+    public void placeShipsOnBoard() {
+        for(Ship ship : ships) {
+            boolean horizontal = askValidShipDirection();
+            Point startingPoint = askValidStartingPoint(ship, horizontal);
+            placeValidShip(ship, startingPoint, horizontal);
+
+            printBoard();
+        }
+    }
+
+    public IGameField getField(int x, int y) {
+        if(!isInsideBoard(x, y)) {
+            throw new IllegalArgumentException("Outside board - try again: ");
+        }
+        return board[y][x];
+    }
+
+    public void printBoard() {
+        System.out.print("\t");
+
+        for(int i = 0; i < BOARD_SIZE; i++) {
+            System.out.print(BOARD_LETTERS[i] + "\t");
+        }
+
+        System.out.println();
+
+        for(int i = 0; i < BOARD_SIZE; i++) {
+            System.out.print((i+1) + "\t");
+            for(int j = 0; j < BOARD_SIZE; j++) {
+                System.out.print(board[i][j].getIcon() + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    private boolean askValidShipDirection() {
+        System.out.printf("%nDo you want to place the ship horizontally (H) or vertically (V)?");
+        String direction;
+        do {
+            direction = scanner.nextLine().trim();
+        }while (!HORIZONTAL.equals(direction) && !VERTICAL.equals(direction));
+
+        return HORIZONTAL.equals(direction);
+    }
+
+    private Point askValidStartingPoint(Ship ship, boolean horizontal) {
+        Point from;
+        do {
+            System.out.printf("%nEnter position of %s (length  %d): ", ship.getName(), ship.getSize());
+            from = new Point(scanner.nextInt(), scanner.nextInt());
+        } while(!isValidStartingPoint(from, ship.getSize(), horizontal));
+
+        return from;
+    }
+
+    private boolean isValidStartingPoint(Point from, int length, boolean horizontal) {
+        int xDiff = 0;
+        int yDiff = 0;
+        if(horizontal) {
+            xDiff = 1;
+        } else {
+            yDiff = 1;
+        }
+
+        int x = (int)from.getX() - 1;
+        int y = (int)from.getY() - 1;
+        if(!isInsideBoard(x, y) ||
+                (!isInsideBoard(x + length,y) && horizontal) ||
+                (!isInsideBoard(x, y + length) && !horizontal)
+                ) {
+            return false;
+        }
+
+        for(int i = 0; i < length; i++) {
+            if(board[(int)from.getY() + i *yDiff - 1]
+                    [(int)from.getX() + i *xDiff - 1].getIcon() != WATER){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void placeValidShip(Ship ship, Point startingPoint, boolean horizontal) {
+        int xDiff = 0;
+        int yDiff = 0;
+        if(horizontal) {
+            xDiff = 1;
+        } else {
+            yDiff = 1;
+        }
+        for(int i = 0; i < ship.getSize() ; i++) {
+            board[(int)startingPoint.getY() + i*yDiff - 1]
+                    [(int)startingPoint.getX()+ i*xDiff - 1] = new ShipField(ship);
+        }
+    }
+    private boolean isInsideBoard(int x, int y){
+        return x <= BOARD_SIZE && x >= 0
+                && y <= BOARD_SIZE && y >= 0;
+    }
+}
+IGameField.java
+
+package com.tn.field;
+
+import com.tn.game.Result;
+
+
+public interface IGameField {
+    char getIcon();
+    Result shootAt();
+}
+ShipField.java
+
+package com.tn.field;
+
+import com.tn.game.Result;
+import com.tn.ship.Ship;
+
+
+public class ShipField implements IGameField {
+    private final Ship ship;
+
+    public ShipField(Ship ship) {
+        this.ship = ship;
+    }
+
+    @Override
+    public char getIcon() {
+        char icon;
+        Result shipState = ship.getState();
+        switch (shipState) {
+            case PARTIAL_HIT: icon = 'O';
+                break;
+            case DESTROYED: icon = 'O';
+                break;
+            case NO_HIT: icon = 'X';
+                break;
+            default: icon = ' ';
+                break;
+        }
+        return icon;
+    }
+
+    @Override
+    public Result shootAt() {
+        ship.hit();
+        return ship.getState();
+    }
+}
+WaterField.java
+
+package com.tn.field;
+
+import com.tn.game.Result;
+
+
+public class WaterField implements IGameField {
+    private boolean isThisFieldHit = false;
+
+    @Override
+    public char getIcon() {
+        return isThisFieldHit ? 'M' : '~';
+    }
+
+    @Override
+    public Result shootAt() {
+        isThisFieldHit = true;
+        return Result.NO_HIT;
+    }
+}
+IPlayer.java
+
+package com.tn.player;
+
+
+public interface IPlayer {
+    void placeShips();
+    void fireAt(IPlayer opponent);
+    int getTotalLivesLeft();
+}
+HumanPlayer.java
+
+package com.tn.player;
+
+import com.tn.board.Board;
+import com.tn.game.Result;
+
+import java.awt.*;
+import java.util.Scanner;
+
+
+public class HumanPlayer implements IPlayer {
+    private int totalLivesLeft = 17;
+
+    private int id;
+    private Board board;
+    private Scanner scanner;
+
+    public HumanPlayer(int id) {
+        this.id = id;
+        this.board = new Board();
+        this.scanner = new Scanner(System.in);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    @Override
+    public void placeShips() {
+        System.out.printf("%n======== Player %d - Time to place out your ships ========%n", id);
+        board.placeShipsOnBoard();
+    }
+
+    @Override
+    public void fireAt(IPlayer opponent) {
+        System.out.printf("%n Alright Player %d - Enter coordinates for your attack: ", id);
+
+        boolean isPointValid = false;
+        while(!isPointValid) {
+            try {
+                Point point = new Point(scanner.nextInt(), scanner.nextInt());
+                int x = (int)point.getX() - 1;
+                int y = (int)point.getY() - 1;
+
+                Result result = ((HumanPlayer)opponent)
+                        .getBoard()
+                        .getField(x, y)
+                        .shootAt();
+
+                if(result == Result.PARTIAL_HIT ||  result == Result.DESTROYED) {
+                    totalLivesLeft--;
+                }
+
+                isPointValid = true;
+            } catch(IllegalArgumentException e) {
+                System.out.printf(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public int getTotalLivesLeft() {
+        return totalLivesLeft;
+    }
+
+
+}
+Ship.java
+
+package com.tn.ship;
+
+import com.tn.game.Result;
+
+
+public class Ship {
+    private final String name;
+    private final int size;
+    private int lives;
+
+    public Ship(String name, int size) {
+        this.name = name;
+        this.size = size;
+        this.lives = size;
+    }
+
+    public void hit() {
+        if(lives > 0) {
+            System.out.printf("%nGood shot! The %s was hit", name);
+            lives--;
+        } else {
+            System.out.println("Ship is destroyed");
+        }
+    }
+
+    public Result getState() {
+        if(lives == 0) {
+            return Result.DESTROYED;
+        } else if(lives < size) {
+            return Result.PARTIAL_HIT;
+        } else {
+            return Result.NO_HIT;
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+}
+ShipSize.java
+
+package com.tn.ship;
+
+
+public class ShipSize {
+    private ShipSize() {
+    }
+
+    public static final int CARRIER = 5;
+    public static final int BATTLESHIP = 4;
+    public static final int CRUISER = 3;
+    public static final int SUBMARINE = 3;
+    public static final int DESTROYER = 2;
+}
+Result.java
+
+package com.tn.game;
+
+
+public enum Result {
+    NO_HIT,
+    PARTIAL_HIT,
+    DESTROYED
+}
+Game.java
+
+package com.tn.game;
+
+import com.tn.player.HumanPlayer;
+
+
+public class Game {
+    private HumanPlayer[] players;
+
+    public Game() {
+
+        this.players = new HumanPlayer[]{
+                new HumanPlayer(1),
+                new HumanPlayer(2)
+        };
+    }
+
+    public void start() {
+        int i = 0;
+        int j = 1;
+        int len = players.length;
+        HumanPlayer player = null;
+
+        this.players[i].placeShips();
+        this.players[j].placeShips();
+
+        while(players[0].getTotalLivesLeft() > 0 &&
+                players[1].getTotalLivesLeft() > 0) {
+
+            players[i++ % len].fireAt(players[j++ % len]);
+            player = (players[0].getTotalLivesLeft() < players[1].getTotalLivesLeft()) ?
+                    players[1] :
+                    players[0];
+        }
+
+        System.out.printf("Congrats Player %d, you won!",player.getId());
+    }
+}
+Main.java
+
+import com.tn.game.Game;
+
+public class Main {
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.start();
+    }
+}
