@@ -84,15 +84,44 @@ Using base64 encoding, an 8 letter long key would result in 64^8 = ~281 trillion
 
 With 68.7B unique strings, let’s assume for our system six letter keys would suffice.
 
-If we use the MD5 algorithm as our hash function, it’ll produce a 128-bit hash value. After base64 encoding, we’ll get a string having more than 21 characters (since each base64 character encodes 6 bits of the hash value). Since we only have space for 8 characters per short key, how will we choose our key then? We can take the first 6 (or 8) letters for the key. This could result in key duplication though, upon which we can choose some other characters out of the encoding string or swap some characters.
+public final class Base64EncoderDecoder
+{
+    private static final char[] ALPHABET = { '0', '1', '2', ...'a',...'z', 'A',...'Z'};
+    private static final int ENCODE_LENGTH = 62;
 
-What are different issues with our solution? We have the following couple of problems with our encoding scheme:
+    public static String encode(int victim)
+    {
+        final List<Character> list = new ArrayList<>();
 
-If multiple users enter the same URL, they can get the same shortened URL, which is not acceptable.
-What if parts of the URL are URL-encoded? e.g., http://www.educative.io/distributed.php?id=design, and http://www.educative.io/distributed.php%3Fid%3Ddesign are identical except for the URL encoding.
+        do {
+            list.add(ALPHABET[victim % ENCODE_LENGTH]);
+            victim /= ENCODE_LENGTH;
+        } while (victim > 0);
+        
+        //If the length of the encoded string is under 6 chars, append remaining chars.
+        while(list.size()<6){
+          list.add(ALPHABET[0]);
+        }
+        
+        Collections.reverse(list);
+        return new String(list.toArray(new char[list.size()]);
+    }
+
+    public int decode(final String encoded)
+    {
+        int ret = 0;
+        char c;
+        for (int index = 0; index < encoded.length(); index++) {
+            c = encoded.charAt(index);
+            ret *= ENCODE_LENGTH;
+            ret += Arrays.binarySearch(ALPHABET, c);
+       }
+       return ret;
+    }
+}
+
+
 Workaround for the issues: We can append an increasing sequence number to each input URL to make it unique, and then generate a hash of it. We don’t need to store this sequence number in the databases, though. Possible problems with this approach could be an ever-increasing sequence number. Can it overflow? Appending an increasing sequence number will also impact the performance of the service.
-
-Another solution could be to append user id (which should be unique) to the input URL. However, if the user has not signed in, we would have to ask the user to choose a uniqueness key. Even after this, if we have a conflict, we have to keep generating 
 
 7. Data Partitioning and Replication
 To scale out our DB, we need to partition it so that it can store information about billions of URLs. We need to come up with a partitioning scheme that would divide and store our data to different DB servers.
