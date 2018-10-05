@@ -84,7 +84,7 @@ Using base64 encoding, an 8 letter long key would result in 64^8 = ~281 trillion
 
 With 68.7B unique strings, let’s assume for our system six letter keys would suffice.
 
-public final class AlphabetEncoder
+public final class Base64EncoderDecoder
 {
     private static final char[] ALPHABET = { '0', '1', '2', ...'a',...'z', 'A',...'Z'};
     private static final int ENCODE_LENGTH = 62;
@@ -97,7 +97,12 @@ public final class AlphabetEncoder
             list.add(ALPHABET[victim % ENCODE_LENGTH]);
             victim /= ENCODE_LENGTH;
         } while (victim > 0);
-
+        
+        //If the length of the encoded string is under 6 chars, append remaining chars.
+        while(list.size()<6){
+          list.add(ALPHABET[0]);
+        }
+        
         Collections.reverse(list);
         return new String(list.toArray(new char[list.size()]);
     }
