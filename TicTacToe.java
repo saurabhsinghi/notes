@@ -1,8 +1,10 @@
+
+/* Complete OO design: https://github.com/robertbraeutigam/tictactoe/tree/master/src/main/java/com/github/robertbraeutigam/tictactoe
+*/
+
 /*
  Given n = 3, assume player 1 is "X" and player 2 is "0" 
 */
-
-
 public class TicTacToe{
 
   private int[] rows;
