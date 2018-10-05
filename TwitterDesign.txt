@@ -1,0 +1,78 @@
+Basic flow - a) come up with use cases b) do the math c) load balancer + multiple web app instances d) DB tables e) REST apis f) Scaling DB - sharding, replication etc. 
+
+DB tables:
+Users {id, user_name, first, last name, created_time}
+Tweets {id, content, created_time, user_id}
+Connections {follower_user_id, following_user_id, creation, time}
+Favorites {user_id, tweet_id, created_time}
+
+DB indexes:
+Get the feed of a user - This would require us to quickly lookup the userIds a user follows, get their top tweets and for each tweet get users who have favorited the tweet. 
+This means we need to following index : 
+1. An index on follower_user_id in Connections table to quickly lookup the userIds a user follows.
+2. An index on user_id + created_at in Tweets table to get the top tweets for a user ( where user_id = x sort by created_at desc )
+3. An index on tweet_id in Favorites table.
+
+Storage requirements:
+-For every tweet, we need to store content, timestamp and ownerID.
+-For every user, we need to store some personal information ( Name, age, birthdate, etc. )
+-We need to store all u1->u2 follower relations.
+-We need to store all user_ids against a tweet of users who have favorited the tweet.
+
+Size of Tweets : 
+Number of tweets per day : 500 million 
+Maximum size of a tweet : 140 chars + 1 byte for timestamp + 1 byte for userId = 142 bytes 
+Provisioning for : 5 years = 365 * 5 days 
+Space required : 142bytes * 500M * 365 * 5 = 129.5TB
+
+Size of User - follower relation : 
+Assuming total of 1 Billion users and every user has 200 followers on average, we end up with 200B total connections. To store it, we would need 200B * 2 bytes ( size of 2 userIDs) = 400G.
+
+Size of Tweet to Favorites relation : 
+Average number of favorites per tweet : 2 ( Ref. Estimations section ) 
+Total number of tweets daily : 500M 
+Provisioning for : 5 years = 365 * 5 days 
+Space required : (2 bytes + 1 byte for tweetId) * 500M * 365* 5 = 2.7TB 
+So, total space required is close to 130TB. That’d definitely not fit on a single machine’s hard disk.
+
+APIs:
+Posting new tweets : addTweet(userId, tweetContent, timestamp)
+Following a user : followUser(userId, toFollowUserId)
+Favorite a tweet : favoriteTweet(userId, tweetId)
+TweetResult getUserFeed(user, pageNumber, pageSize, lastUpdatedTimestamp)
+where TweetResult has the following fields : 
+TweetResult { 
+List<Tweet> tweets, 
+boolean isDeltaUpdate 
+}
+Tweet { 
+userId,
+content,
+timestamp, 
+numFavorites, 
+sampleFavoriteNames
+}
+
+Diagram - https://www.hiredintech.com/classrooms/system-design/lesson/72
+https://www.interviewbit.com/problems/design-twitter/
+
+A. Understand the problem and scope
+Define the use cases, with interviewer's help.
+Suggest additional features.
+Remove items that interviewer deems out of scope.
+Assume high availability is required, add as a use case.
+
+B. Think about constraints
+Ask how many requests per month.
+Ask how many requests per second (they may volunteer it or make you do the math).
+Estimate reads vs. writes percentage.
+Keep 80/20 rule in mind when estimating.
+How much data written per second.
+Total storage required over 5 years.
+How much data reads per second.
+
+C. Abstract design
+Layers (service, data, caching).
+Infrastructure: load balancing, messaging.
+Rough overview of any key algorithm that drives the service.
+Consider bottlenecks and determine solutions.
