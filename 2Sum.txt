@@ -1,3 +1,5 @@
+/* Given a target sum and an array, return the indexes of 2 elements that sum to that value.
+*/
 public int[] twoSum(int[] nums, int target) {
         
        Map<Integer, Integer> map = new HashMap();
