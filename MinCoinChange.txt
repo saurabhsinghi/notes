@@ -1,0 +1,31 @@
+/* https://www.ideserve.co.in/learn/minimum-number-of-coins-to-make-change
+Consider values set as {2, 5, 3}, n = length of values = 3
+and sum = 7
+Then we can make change for 7 by reducing the given coin values one by one and finding if we can make of the remaining amount.
+For example, for 7, we subtract 2, 5, 3 one by one and then find out if we can make change of the remaining amounts:
+1-> (7-2) = 5,
+2-> (7-5) = 2,
+3-> (7-3) = 4 respectively.
+Of all the possibilities we find the one which gives us minimum number of coins i.e. minimum number of coins from #1, #2 and #3 above and add 1 to it.
+So, the next step in this problem is to find out minimum number of coins to make change for 5, 2, 4 which can be found by applying same strategy as above taking sum as 5, 2 and 4 and finally stopping when no further amount can be reduced from sum or sum becomes 0.
+If no further values can be reduced from sum to make change, and it is still non zero, then this path does not lead to a solution.
+
+Hence, we have following recurrence relation:
+    If sum = 0, minCoins = 0 - because no coins are required to make change for 0.
+    else minCoins(sum) = min(minCoins(sum-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
+    If there is no i for which sum >= value[i], then minCoins(sum) = ∞ which is represented by Integer.MAX_VALUE
+*/
+
+public int coinChange(int[] coins, int amount) {
+		int[] dp = new int[amount + 1];
+		Arrays.fill(dp, Integer.MAX_VALUE);
+		dp[0] = 0;
+		for (int coin : coins) {
+			for (int i = coin; i <= amount; i++) {
+				if (dp[i - coin] != Integer.MAX_VALUE) {
+					dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+				}
+			}
+		}
+		return dp[amount] == Integer.MAX_VALUE ? - 1 : dp[amount];
+	}
