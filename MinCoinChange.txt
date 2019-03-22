@@ -14,6 +14,38 @@ Hence, we have following recurrence relation:
     If sum = 0, minCoins = 0 - because no coins are required to make change for 0.
     else minCoins(sum) = min(minCoins(sum-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
     If there is no i for which sum >= value[i], then minCoins(sum) = ∞ which is represented by Integer.MAX_VALUE
+    For finding minimum number of coins for sum = 7:
+	A) minCoins(7) = min(minCoins(7-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
+		       = min(minCoins(7-2), minCoins(7-5), minCoins(7-3)) + 1
+		       = min(minCoins(5), minCoins(2), minCoins(4)) + 1
+	B) minCoins(5) = min(minCoins(5-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
+		       = min(minCoins(5-2), minCoins(5-5), minCoins(5-3)) + 1
+		       = min(minCoins(3), minCoins(0), minCoins(2)) + 1
+	C) minCoins(3) = min(minCoins(3-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
+		       = min(minCoins(3-2), minCoins(3-3)) + 1,             because 3 < 5, we do not consider it
+		       = min(minCoins(1), minCoins(0)) + 1
+	D) minCoins(1) = ∞ because there is no value in set {2, 5, 3} which is less than 1 so 1 cannot be represented using any coins.
+	E) minCoins(0) = 0
+	Therefore, 
+	C) minCoins(3)  = min(minCoins(1), minCoins(0)) + 1 = min(0, ∞) + 1 = 1
+	F) minCoins(2) = min(minCoins(2-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
+		       = min(minCoins(2-2)) + 1
+		       = min(minCoins(0)) + 1
+		       = 1
+	Therefore, 
+	B) minCoins(5) = min(minCoins(3), minCoins(0), minCoins(2)) + 1 = min(1, 0, 1) + 1 = 0 + 1 = 1
+	G) minCoins(4) = min(minCoins(4-values[i])) + 1, for all i = 0 to n-1, where sum >= values[i]
+		       = min(minCoins(4-2), minCoins(4-3)) + 1
+		       = min(minCoins(2), minCoins(1)) + 1
+		       = min(1, ∞) + 1
+		       = 1 + 1
+		       = 2
+	Finally, 
+	A) minCoins(7) = min(minCoins(5), minCoins(2), minCoins(4)) + 1
+		       = min(1, 1, 2) + 1
+		       = 2
+		       
+	Time complexity of recursive algorithm is exponential.
 */
 
 public int coinChange(int[] coins, int amount) {
