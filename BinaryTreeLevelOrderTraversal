@@ -1,0 +1,30 @@
+
+class BinaryTreeTraversal{
+class Node{
+  int data;
+  Node left;
+  Node right;
+}
+public static void main(String args[]){
+  printTreeLevelOrder(rootNode);
+}
+
+private void printTreeLevelOrder(Node rootNode){
+  if(rootNode==null)
+   return;
+ 
+  Queue<Node> queue = new LinkedList<Node>();
+  queue.add(rootNode);
+   
+  while(!queue.isEmpty()){
+   Node obj = (Node)queue.poll();
+    
+   System.out.print(obj.getData() + " ");
+    
+   if(obj.getLeft()!=null)
+    queue.add(obj.getLeft());
+     
+   if(obj.getRight()!=null)
+    queue.add(obj.getRight());
+  }
+ }
