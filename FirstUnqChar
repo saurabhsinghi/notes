@@ -1,0 +1,47 @@
+/*
+Given a string, find the first non-repeating character in it and return it's index. If it doesn't exist, return -1.
+Examples:
+s = "leetcode"
+return 0.
+
+s = "loveleetcode",
+return 2
+*/
+
+class Solution {
+    public int firstUniqChar(String s) {
+      Map<Character, Integer> map = new LinkedHashMap();  
+      for(Character c: s.toCharArray()) {
+         if(!map.containsKey(c)){
+             map.put(c, 1);
+         }
+         else{
+            map.put(c, map.get(c)+1); 
+         } 
+      }
+      for(Map.Entry<Character, Integer> entry : map.entrySet()){
+        if(entry.getValue()==1){
+            return s.indexOf(entry.getKey());
+        }       
+      }
+      return -1;
+    }
+}
+
+OR:
+
+class Solution {
+    public int firstUniqChar(String s) {
+       char [] arr = new char[256];
+        for(char c = 'a'; c<='z';c++){
+           arr[c] = 0; 
+        }
+       for(char c: s.toCharArray()){
+           arr[c]++;
+       }
+       for(char c: s.toCharArray()){
+            if(arr[c]==1) return ;   
+       }
+       return -1; 
+    }
+}
