@@ -1,0 +1,28 @@
+/*
+Given a binary tree, check whether it is a mirror of itself (ie, symmetric around its center).
+For example, this binary tree [1,2,2,3,4,4,3] is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+But the following [1,2,2,null,3,null,3] is not:
+    1
+   / \
+  2   2
+   \   \
+   3    3
+*/
+
+  public boolean isSymmetric(TreeNode root) {
+        if(root==null) return true;
+        return helper(root.right, root.left);
+    }
+    
+    public boolean helper(TreeNode r, TreeNode l){
+      if(r==l) return true;
+      if((r==null && l!=null) || l==null && r!=null) return false;
+      if(r.val!=l.val) return false;
+       return helper(r.left, l.right) && helper(r.right, l.left); 
+    }
