@@ -1,3 +1,4 @@
+//Binary Tree
 public Node lcA(Node root, Node p, Node q) {
         if(root==null || root == p || root ==q) return root;
         Node left = lcA(root.left, p, q);
@@ -5,4 +6,18 @@ public Node lcA(Node root, Node p, Node q) {
         if(left==null) return right;
         else if(right == null) return left;
         else return root;
+   }
+   
+   //Binary search tree
+   public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        while(root != null) {
+            if(root.val > p.val && root.val > q.val)
+                root = root.left;
+            else if ( root.val < p.val && root.val < q.val)
+                root = root.right;
+            else
+                return root;
+        }   
+        return root;
     }
+   
