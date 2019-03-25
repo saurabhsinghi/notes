@@ -47,4 +47,6 @@ class Solution {
        pre=root;
        root = root.right; 
       }
-        re
+        return true; 
+  }
+}
