@@ -1,23 +1,33 @@
 /*
 Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
-
 a) Input:
 11110
 11010
 11000
 00000
-
 Output: 1
-
 b) Input:
 11000
 11000
 00100
 00011
-
 Output: 3
 */
+/*
+The solution is looping through the grid, and when it finds the first '1' (land) it marks it as visited and also looks for all the adjacent (horizontally and vertically) (Remember: Question does not ask us to consider the diagonals). Now when it is visiting all its adjacent if it is land, it marks them as water, because those are the connected islands, so all the one's (land) connected will be mark as visited, remember because of recursion it will continue marking as visited to all the connected one's (land).
 
+Consider example:
+11110
+11010
+11000
+00000
+Now, while looping we encounter grid[0][0] = 1 therefore, DFS will be called, and count is incremented since we found first land, now we will recursively called DFS, until we have grid[i][j] == 1. This way, it will be
+00000
+00000
+00000
+00000
+Therefore, count = 1, in the end. Complexity = MxN
+*/
 public int numIslands(char[][] grid) {
         int count = 0;
         for(int i = 0; i < grid.length; i ++){
