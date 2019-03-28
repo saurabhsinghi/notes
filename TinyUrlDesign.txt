@@ -1,3 +1,79 @@
+TLDR;
+1. Traffic: 
+  Writes: 500 million / (30 days * 24 hours * 3600 seconds) = ~200 URLs/s
+  URLs redirections per second, considering 100:1 read/write ratio:
+  Reads: 50 billion / (30 days * 24 hours * 3600 sec) = ~19K/s
+
+2. Storage:
+  500 million * 5 years * 12 months = 30 billion
+  Let’s assume each stored object will be approximately 500 bytes (just a ballpark estimate–we will dig into it later). 
+  Total storage = 30 billion * 500 bytes = 15 TB
+
+3. Bandwidth estimates:
+   Write request = 200 * 500 bytes = 100 KB/sec
+   Read requests = 19K * 500 bytes = ~9 MB/sec
+
+4.Memory estimates: using 80/20 rule, assume 20% will be cached. 
+  (19K *.2) * 500 bytes * 3600 seconds * 24 hours = ~170GB 
+
+5. Summary of stats:
+  New URLs	200/sec
+  URL redirections	19K/sec
+  Incoming data	100KB/sec
+  Outgoing data	9MB/sec
+  Storage for 5 years	15 TB
+  Memory for cache	170 GB
+
+6. System APIs:
+creatURL(api_dev_key, original_url, custom_alias=None, user_name=None, expire_date=None)
+deleteURL(api_dev_key, url_key)
+
+7.DB design:
+URL: {hash varchar(16), orig_url, creation_time, expiration_time, user_id}
+User: {id, name, email}
+
+8.Encoding actual URL
+Using base64 encoding, a 6 letter long key would result in 64^6 = ~68.7 billion possible strings
+Using base64 encoding, an 8 letter long key would result in 64^8 = ~281 trillion possible strings
+With 68.7B unique strings, let’s assume for our system six letter keys would suffice.
+public final class Base64EncoderDecoder
+{
+    private static final char[] ALPHABET = { '0', '1', '2', ...'a',...'z', 'A',...'Z'};
+    private static final int ENCODE_LENGTH = 62;
+
+    public static String encode(int victim)
+    {
+        final List<Character> list = new ArrayList<>();
+
+        do {
+            list.add(ALPHABET[victim % ENCODE_LENGTH]);
+            victim /= ENCODE_LENGTH;
+        } while (victim > 0);
+        
+        //If the length of the encoded string is under 6 chars, append remaining chars.
+        while(list.size()<6){
+          list.add(ALPHABET[0]);
+        }
+        
+        Collections.reverse(list);
+        return new String(list.toArray(new char[list.size()]);
+    }
+
+    public int decode(final String encoded)
+    {
+        int ret = 0;
+        char c;
+        for (int index = 0; index < encoded.length(); index++) {
+            c = encoded.charAt(index);
+            ret *= ENCODE_LENGTH;
+            ret += Arrays.binarySearch(ALPHABET, c);
+       }
+       return ret;
+    }
+}
+
+********************Details************************
+
 Our URL shortening system should meet the following requirements:
 
 1.Functional Requirements:
