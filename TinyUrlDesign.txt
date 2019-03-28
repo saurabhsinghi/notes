@@ -1,5 +1,5 @@
 TLDR;
-1. Traffic: 
+1. Traffic (per month): 
   Writes: 500 million / (30 days * 24 hours * 3600 seconds) = ~200 URLs/s
   URLs redirections per second, considering 100:1 read/write ratio:
   Reads: 50 billion / (30 days * 24 hours * 3600 sec) = ~19K/s
