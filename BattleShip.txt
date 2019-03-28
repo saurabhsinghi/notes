@@ -1,3 +1,18 @@
+/*
+
+Main classes/interfaces:
+classes: Board
+         Ship, 
+         ShipField, 
+         WaterField, 
+         Game, 
+         HumanPlayer
+interfaces: IGameField, IPlayer
+enums: Result (NO_HIT, PARTIAL_HIT, DESTROYED)
+*/
+
+
+
 Board.java
 
 package com.tn.board;
