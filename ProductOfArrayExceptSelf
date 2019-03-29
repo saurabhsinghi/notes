@@ -29,10 +29,22 @@ class Solution {
     }
 }
 /*
+Solution steps:
 [1,2,3,4]
+
+left[0] = 1
+left[1] = left[0] * nums[0] = 1
+left[2] = left[1] * nums[1] = 2
+left[3] = left[2] * nums[2] = 6
 
 right[3] = 1
 right[2]  = right[3]*nums[3] = 4
 right[1] = right[2] * nums[2] = 12
-right[0] = right[1] * nums[1] = 12   
+right[0] = right[1] * nums[1] = 24  
+
+results[0] = 1 * 24 = 24
+results[1] = 1 * 12 = 12
+results[2] = 2 * 4 = 8
+results[3] = 6 * 1 = 6
 */
+
