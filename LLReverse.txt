@@ -1,3 +1,23 @@
+/*
+E.g. 1-> 2 -> 3
+head = 1
+--------
+next = 2
+head.next = null
+newHead = 1
+head = 2
+--------
+next = 3
+head.next = 1
+newHead = 2
+head = 3
+--------
+next = null
+head.next = 2
+newHead = 3
+head = null
+*/
+
 public ListNode reverseList(ListNode head) {
     /* iterative solution */
     ListNode newHead = null;
@@ -20,16 +40,5 @@ public ListNode reverseList(ListNode head) {
         next.next = head;
         return othersReversed;
  }
-
-[4,6,1,8,9,10,12,2], k = 3, result = 6
-[1,2,4,6,8,9,10,12]
-
-x=4
-
-4,6,1,2, 8, 10,12,9
-
-x=2
-
-1,2,4  6 
 
 
