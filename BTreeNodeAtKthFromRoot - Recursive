@@ -1,0 +1,27 @@
+/*
+Given a Binary Tree, Print all Nodes that are at K distance from root node in Binary Tree.
+We can also think of this question as Print all nodes that belong to Level K.  
+
+        4
+    2        6 
+ 1   3     5   7
+ 
+k = 1, o/p = [2,6] 
+k = 2, o/p = [1,3,5,7]
+
+Do a Pre-Order traversal of Tree and and decrement K each time you move to left or right.
+When K = 0, it means that is the level we are interested in. 
+So print the Node and return.
+*/
+
+private void printNodesAtLevel(Node rootNode, int level) {
+        if(rootNode==null){
+            return;
+        }
+        if(level == 0){
+            System.out.print(rootNode.getData() + " ");
+            return;
+        }
+        printNodesAtLevel(rootNode.getLeft(), level - 1);
+        printNodesAtLevel(rootNode.getRight(), level - 1);
+ }
