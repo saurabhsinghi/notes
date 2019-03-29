@@ -14,7 +14,13 @@ public void moveZeroes(int[] nums) {
       int j = 0; 
       for(int i = 0;i<nums.length;i++){
           if(nums[i]!=0){
-              nums[j] = nums[i];
+             // This will bubble forward non-zero elements in order (since j gets incremented from 0, and for every non-zero element)
+             // 1st pass: [0,1,0,3,12] j = 0
+             // 2nd pass: [1,1,0,3,12] j = 1
+             // 3rd pass: [1,1,0,3,12] j = 1
+             // 4th pass: [1,3,0,3,12] j = 2
+             // 5th pass: [1,3,12,3,12] j = 3
+              nums[j] = nums[i]; 
               j++;
           }
       }
