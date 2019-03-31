@@ -48,16 +48,16 @@ public int numIslands(char[][] grid) {
         return count;
     }
     
-    public void explore(char[][] g, int si, int sj){
-        if(si < 0 || sj < 0 
-                   || si >= g.length || sj > g[0].length 
-                    || g[si][sj]!='1'){
+    public void explore(char[][] g, int i, int j){
+        if(i < 0 || j < 0 
+                   || i >= g.length || j > g[0].length 
+                    || g[i][j]!='1'){
             return;
         }
-        g[si][sj] = '#';
-        explore(g,si - 1, sj);
-        explore(g,si + 1, sj);
-        explore(g,si, sj - 1);
-        explore(g,si, sj + 1);
+        g[i][j] = '#';
+        explore(g,i - 1, j);
+        explore(g,i + 1, j);
+        explore(g,i, j - 1);
+        explore(g,i, j + 1);
       }
     }
